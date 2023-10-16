@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+from display import Display
+
 import os, cv2
-import matplotlib.pyplot as plt
 import numpy as np
 from skimage.measure import ransac
 from skimage.transform import FundamentalMatrixTransform
@@ -53,9 +54,9 @@ class FeatureExtraction():
             ret[:,0,:] = self.normalise(ret[:,0,:])
             ret[:,1,:] = self.normalise(ret[:,1,:])
 
-            model, inliers = ransac((ret[:, 0], ret[:, 1]),
-                                    FundamentalMatrixTransform,
-                                    min_samples=8, residual_threshold=1, max_trials=100)
+            _, inliers = ransac((ret[:, 0], ret[:, 1]),
+                                FundamentalMatrixTransform,
+                                min_samples=8, residual_threshold=1, max_trials=100)
 
             ret=ret[inliers]
 
@@ -68,10 +69,12 @@ class FeatureExtraction():
 IMG_DIR = '/Users/James/Downloads/Lighthouse/'
 
 files = [f for f in sorted(os.listdir(IMG_DIR))]
-images = [cv2.imread(IMG_DIR + path) for path in files[:50]]
+images = [cv2.imread(IMG_DIR + path) for path in files]
 
 W = 2048//2
 H = 1080//2
+
+disp = Display(W, H)
 
 F = 1
 K = np.array([[F,0,W//2], [0,F,H//2], [0,0,1]])
@@ -86,12 +89,11 @@ for i in (t := trange(len(images))):
         u1,v1 = fe.denormalise(pt1)
         u2,v2 = fe.denormalise(pt2)
         cv2.circle(img, (u1,v1), color=(0,255,0), radius=1)
-        cv2.line(img, (u1,v1), (u2,v2), color=(255,0,0))
+        cv2.line(img, (u1,v1), (u2,v2), color=(0,0,255))
 
-    plt.imshow(img), plt.pause(0.01)
+    disp.paint(img)
 
     t.set_description(f"Frame: {i} | N Keypoints (Matched): {len(features)}")
-
 
 # Estimate Pose Transformation
 # Camera Calibration
