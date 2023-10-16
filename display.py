@@ -10,9 +10,6 @@ class Display(object):
     self.surface = pygame.Surface(self.screen.get_size()).convert()
 
   def paint(self, img):
-    # RGB, not BGR
-    pygame.surfarray.blit_array(self.surface, img.swapaxes(0,1)[:, :, [2,1,0]])
+    pygame.surfarray.blit_array(self.surface, img.swapaxes(0,1)[:, :, [2,1,0]]) # BGR > RGB
     self.screen.blit(self.surface, (0,0))
-
-    # blit
     pygame.display.flip()
