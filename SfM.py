@@ -6,14 +6,15 @@ from extractor import FeatureExtraction
 import cv2
 import numpy as np
 
-DATA = '/Users/James/Downloads/Lighthouse.mp4'
+DATA = '/Users/James/Documents/Lighthouse.mp4'
 
 W = 4096//2
 H = 2160//2
-disp = Display(W, H)
+# disp = Display(W, H)
 
-F = 1
+F = 620
 K = np.array([[F,0,W//2], [0,F,H//2], [0,0,1]])
+print(K)
 
 fe = FeatureExtraction(K)
 
